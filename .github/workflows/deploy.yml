@@ -18,15 +18,18 @@ jobs:
       AWS_REGION: ap-south-1
 
     steps:
+    # 1️⃣ Checkout
     - name: Checkout repository
       uses: actions/checkout@v4
 
+    # 2️⃣ AWS Auth (OIDC)
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v4
       with:
         role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
         aws-region: ap-south-1
 
+    # 3️⃣ Login to ECR
     - name: Login to Amazon ECR
       run: |
         aws ecr get-login-password --region ap-south-1 \
@@ -34,19 +37,33 @@ jobs:
           --username AWS \
           --password-stdin ${{ secrets.ECR_URL }}
 
+    # 4️⃣ Create ECR repo if missing ✅ FIX
+    - name: Ensure ECR repository exists
+      run: |
+        aws ecr describe-repositories \
+          --repository-names $APP_NAME \
+          --region ap-south-1 \
+        || aws ecr create-repository \
+          --repository-name $APP_NAME \
+          --region ap-south-1
+
+    # 5️⃣ Build image
     - name: Build Docker image
       run: docker build -t $APP_NAME ./app
 
+    # 6️⃣ Push image
     - name: Push image to ECR
       run: |
         docker tag $APP_NAME:latest ${{ secrets.ECR_URL }}/$APP_NAME:latest
         docker push ${{ secrets.ECR_URL }}/$APP_NAME:latest
 
+    # 7️⃣ Inject runtime values
     - name: Inject deployment values
       run: |
         export IMAGE_URI=${{ secrets.ECR_URL }}/$APP_NAME:latest
         chmod +x scripts/inject.sh
         ./scripts/inject.sh
 
+    # 8️⃣ Deploy to Kubernetes
     - name: Deploy to Kubernetes
       run: kubectl apply -f k8s/
