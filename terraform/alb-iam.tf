@@ -8,19 +8,27 @@ resource "aws_iam_role" "alb_controller" {
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
-    Statement = [{
-      Effect = "Allow"
-      Principal = {
-        Federated = data.aws_iam_openid_connect_provider.eks.arn
-      }
-      Action = "sts:AssumeRoleWithWebIdentity"
-      Condition = {
-        StringEquals = {
-          "${replace(data.aws_iam_openid_connect_provider.eks.url, "https://", "")}:sub" =
-          "system:serviceaccount:kube-system:aws-load-balancer-controller"
+    Statement = [
+      {
+        Effect = "Allow"
+        Principal = {
+          Federated = data.aws_iam_openid_connect_provider.eks.arn
+        }
+        Action = "sts:AssumeRoleWithWebIdentity"
+        Condition = {
+          StringEquals = {
+            format(
+              "%s:sub",
+              replace(
+                data.aws_iam_openid_connect_provider.eks.url,
+                "https://",
+                ""
+              )
+            ) = "system:serviceaccount:kube-system:aws-load-balancer-controller"
+          }
         }
       }
-    }]
+    ]
   })
 }
 
