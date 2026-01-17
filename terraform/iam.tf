@@ -1,4 +1,4 @@
-# EKS CLUSTER ROLE
+# EKS Cluster Role
 resource "aws_iam_role" "eks_cluster_role" {
   name = "eks-cluster-role"
 
@@ -17,7 +17,7 @@ resource "aws_iam_role_policy_attachment" "eks_cluster_policy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
 }
 
-# NODE ROLE
+# Node Role
 resource "aws_iam_role" "eks_node_role" {
   name = "eks-node-role"
 

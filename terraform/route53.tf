@@ -3,5 +3,8 @@ resource "aws_route53_record" "app" {
   name    = "${var.app_name}.${var.domain_name}"
   type    = "CNAME"
   ttl     = 60
+
+  allow_overwrite = true
+
   records = [aws_eks_cluster.cluster.endpoint]
 }
