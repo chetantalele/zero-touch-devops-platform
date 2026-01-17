@@ -4,8 +4,6 @@ resource "kubernetes_config_map_v1" "aws_auth" {
     namespace = "kube-system"
   }
 
-  force = true
-
   data = {
     mapRoles = yamlencode([
       {
