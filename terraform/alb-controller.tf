@@ -52,6 +52,7 @@ resource "helm_release" "alb_controller" {
 ]
 
 
+
   depends_on = [
     aws_eks_node_group.nodes,
     aws_iam_openid_connect_provider.eks,
