@@ -29,27 +29,28 @@ resource "helm_release" "alb_controller" {
   reuse_values    = true
 
   set = [
-    {
-      name  = "clusterName"
-      value = aws_eks_cluster.cluster.name
-    },
-    {
-      name  = "region"
-      value = "ap-south-1"
-    },
-    {
-      name  = "awsVpcId"
-      value = aws_vpc.main.id
-    },
-    {
-      name  = "serviceAccount.create"
-      value = "false"
-    },
-    {
-      name  = "serviceAccount.name"
-      value = kubernetes_service_account_v1.alb_controller.metadata[0].name
-    }
-  ]
+  {
+    name  = "clusterName"
+    value = aws_eks_cluster.cluster.name
+  },
+  {
+    name  = "region"
+    value = "ap-south-1"
+  },
+  {
+    name  = "vpcId"
+    value = aws_vpc.main.id
+  },
+  {
+    name  = "serviceAccount.create"
+    value = "false"
+  },
+  {
+    name  = "serviceAccount.name"
+    value = kubernetes_service_account_v1.alb_controller.metadata[0].name
+  }
+]
+
 
   depends_on = [
     aws_eks_node_group.nodes,
