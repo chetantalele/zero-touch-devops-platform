@@ -120,7 +120,44 @@ jobs:
           -n $ALB_NAMESPACE || true
 
     # =========================
-    # Optional: Restart controller
+    # CLEANUP — ALB Controller (SAFE)
+    # =========================
+    - name: Cleanup failed ALB Controller Helm release
+      run: |
+        if helm status $ALB_RELEASE_NAME -n $ALB_NAMESPACE >/dev/null 2>&1; then
+          STATUS=$(helm status $ALB_RELEASE_NAME -n $ALB_NAMESPACE | grep STATUS | awk '{print $2}')
+          echo "ALB Controller Helm status: $STATUS"
+          if [ "$STATUS" = "failed" ]; then
+            echo "Uninstalling failed Helm release..."
+            helm uninstall $ALB_RELEASE_NAME -n $ALB_NAMESPACE
+          fi
+        else
+          echo "No Helm release found"
+        fi
+
+    - name: Cleanup old ALB Controller ReplicaSets and Pods
+      run: |
+        echo "Deleting old ReplicaSets..."
+        kubectl delete rs \
+          -n $ALB_NAMESPACE \
+          -l app.kubernetes.io/name=$ALB_RELEASE_NAME \
+          --ignore-not-found
+
+        echo "Deleting old Pods..."
+        kubectl delete pod \
+          -n $ALB_NAMESPACE \
+          -l app.kubernetes.io/name=$ALB_RELEASE_NAME \
+          --ignore-not-found
+
+    - name: Cleanup ALB webhook certificates
+      run: |
+        kubectl delete secret \
+          aws-load-balancer-tls \
+          -n $ALB_NAMESPACE \
+          --ignore-not-found
+
+    # =========================
+    # Restart Controller
     # =========================
     - name: Restart ALB Controller
       run: |
@@ -129,7 +166,7 @@ jobs:
           -n $ALB_NAMESPACE || true
 
     # =========================
-    # Optional: Wait for readiness
+    # Wait for readiness
     # =========================
     - name: Wait for ALB Controller readiness
       run: |
