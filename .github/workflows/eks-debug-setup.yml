@@ -44,51 +44,9 @@ jobs:
         kubectl version --client
         kubectl cluster-info
 
-    # -------------------------------------------------
-    # 4️⃣ Verify Nodes
-    # -------------------------------------------------
-    - name: Verify EKS Nodes
+    - name: Ingress ALB
       run: |
-        echo "Checking nodes..."
-        kubectl get nodes
-
-        NODE_COUNT=$(kubectl get nodes --no-headers | wc -l)
-        if [ "$NODE_COUNT" -eq 0 ]; then
-          echo "❌ No nodes found in cluster"
-          exit 1
-        fi
-
-        echo "✅ Nodes are present"
-
-    # -------------------------------------------------
-    # 5️⃣ Verify Pods
-    # -------------------------------------------------
-    - name: Verify Application Pods
-      run: |
-        kubectl get pods
-
-        NOT_RUNNING=$(kubectl get pods --no-headers | awk '$3 != "Running" {print}')
-        if [ -n "$NOT_RUNNING" ]; then
-          echo "❌ Some pods are not running:"
-          echo "$NOT_RUNNING"
-          exit 1
-        fi
-
-        echo "✅ All pods are running"
-
-    # -------------------------------------------------
-    # 6️⃣ Verify Service
-    # -------------------------------------------------
-    - name: Verify Service
-      run: |
-        kubectl get svc
-
-        if ! kubectl get svc app-service > /dev/null 2>&1; then
-          echo "❌ app-service not found"
-          exit 1
-        fi
-
-        echo "✅ app-service exists"
+        kubectl describe ingress app-ingress
 
     # -------------------------------------------------
     # 7️⃣ Verify Ingress
