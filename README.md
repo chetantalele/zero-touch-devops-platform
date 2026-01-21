@@ -282,6 +282,7 @@ Add the following secrets:
 │       └── main-app
 ├── README.md
 
+```
 
 ### 📁 `/app` folder
 Put your application code here.
