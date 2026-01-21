@@ -1,10 +1,10 @@
 terraform {
   backend "s3" {
-    bucket         = "expense-tracker-terraform-state-devops-test"
+    bucket         = "zero-touch-devops-terraform-state"
     key            = "terraform.tfstate"
     region         = "ap-south-1"
 
-    dynamodb_table = "expense-tracker-terraform-locks"
+    dynamodb_table = "terraform-locks"
     encrypt        = true
   }
 }
