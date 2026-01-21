@@ -2,7 +2,7 @@ const express = require("express");
 const app = express();
 
 app.get("/", (_, res) => {
-  res.send("🚀 It works again Baby........");
+  res.send("🚀 It works ........");
 });
 
 app.get("/health", (_, res) => res.send("OK"));
