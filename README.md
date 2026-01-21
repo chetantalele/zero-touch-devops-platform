@@ -83,34 +83,106 @@ This platform solves all of that by providing:
 
 ## 🟢 STEP 1 — Create GitHub OIDC IAM Role (REQUIRED)
 
+
+
 ### 1️⃣ Go to AWS Console → **IAM**
 - Click **Roles**
 - Click **Create role**
 
+---
+
 ### 2️⃣ Select Trusted Entity
-- Select **Web identity**
+- Trusted entity type: **Web identity**
 - Identity provider: **GitHub**
 - Audience: `sts.amazonaws.com`
 
-### 3️⃣ GitHub Settings
-- GitHub organization: your GitHub username
-- Repository: `*` (or specific repo)
-- Branch: `main`
+> ⚠️ If **GitHub is NOT visible** in the identity provider list, follow **Step 2A** below.
 
-### 4️⃣ Attach Permissions
-Attach these AWS managed policies:
-- `AdministratorAccess` *(for learning/demo)*
+---
 
-> 🔐 In production, use least privilege.
+## 🟡 STEP 2A — Configure GitHub OIDC Provider (If Not Available)
 
-### 5️⃣ Name the Role
-github-actions-zero-touch-role
+> Perform this step **only if GitHub does not appear** as an identity provider.
+
+---
+
+### 1️⃣ Go to IAM → Identity Providers
+- AWS Console → **IAM**
+- Click **Identity providers**
+- Click **Add provider**
+
+---
+
+### 2️⃣ Add OIDC Provider Details
+- **Provider type**: `OpenID Connect`
+- **Provider URL**: https://token.actions.githubusercontent.com
+- **Audience**: sts.amazonaws.com
+
+Click **Add provider**
+
+---
+
+### 3️⃣ Verify Provider Creation
+Ensure the provider appears as:
+- Type: `OIDC`
+- URL: `token.actions.githubusercontent.com`
+
+✅ GitHub is now available as a Web Identity Provider.
+
+---
+
+### 4️⃣ Resume IAM Role Creation
+Go back to: IAM → Roles → Create role
+
+Then continue with **Web identity → GitHub**.
+
+---
+
+## 🟢 STEP 3 — Configure GitHub Access Scope
+
+While creating the IAM role:
+
+- **GitHub organization / user**: `your-github-username`
+- **Repository**: `*` (or specify your repository name)
+- **Branch**: `main`
+
+This ensures:
+- Fork-safe access
+- Controlled role assumption
+- Secure CI/CD execution
+
+---
+
+## 🟢 STEP 4 — Attach Permissions
+
+Attach the following AWS managed policy:
+
+- `AdministratorAccess` *(recommended only for learning/demo)*
+
+> 🔐 **Production environments should always use least-privilege policies.**
+
+---
+
+## 🟢 STEP 5 — Name the Role
+
+Set the role name as: github-actions-zero-touch-role
+
+---
+
+## 🟢 STEP 6 — Copy the Role ARN
+
+After role creation, copy the **Role ARN**.
+
+Example: arn:aws:iam::123456789012:role/github-actions-zero-touch-role
 
 
+📌 This ARN will be added later as a **GitHub Actions secret**.
 
-### 6️⃣ Copy the **Role ARN**
-Example:
-arn:aws:iam::123456789012:role/github-actions-zero-touch-role
+---
+
+✅ **GitHub OIDC authentication is now fully configured.**
+
+
 
 ---
 
@@ -133,8 +205,7 @@ arn:aws:iam::123456789012:role/github-actions-zero-touch-role
 - Click your domain
 - Copy **Hosted Zone ID**
 
-- Example:
-- Z0123456789ABCDEFG
+- Example: Z0123456789ABCDEFG
 
 ---
 
@@ -142,8 +213,7 @@ arn:aws:iam::123456789012:role/github-actions-zero-touch-role
 
 ### 1️⃣ Create S3 Bucket
 - Go to **S3**
-- Create bucket:
-zero-touch-devops-terraform-state
+- Create bucket: zero-touch-devops-terraform-state
 
 - Enable **Block Public Access**
 - Enable **Versioning**
@@ -152,11 +222,9 @@ zero-touch-devops-terraform-state
 
 ### 2️⃣ Create DynamoDB Table
 - Go to **DynamoDB**
-- Create table:
-terraform-locks
+- Create table: terraform-locks
 
-- Partition key:
-LockID (String)
+- Partition key: LockID (String)
 
 - Capacity: On-demand
 
@@ -169,8 +237,7 @@ LockID (String)
 - Create a temporary repo (any name)
 
 ### 2️⃣ Copy Registry URL (NOT repo name)
-Example:
-123456789012.dkr.ecr.ap-south-1.amazonaws.com
+Example: 123456789012.dkr.ecr.ap-south-1.amazonaws.com
 
 > You can delete the dummy repo later.
 
@@ -208,20 +275,17 @@ Put your application code here.
 Your app **must** have a Dockerfile.
 
 ## 🟢 STEP 9 — Push to main
-git add .
-git commit -m "Deploy my app"
-git push origin main
+- git add .
+- git commit -m "Deploy my app"
+- git push origin main
 
 ## 🟢 STEP 10 — Watch Deployment
-Go to :
-GitHub → Actions → Zero Touch Deploy
-⏳ First run takes 15–25 minutes (EKS creation)
+- Go to : GitHub → Actions → Zero Touch Deploy
+- ⏳ First run takes 15–25 minutes (EKS creation)
 
 ## 🟢 STEP 11 — Verify ALB & App
-Check ALB:
-
-Go to EC2 → Load Balancers
-ALB should be created automatically
+- Check ALB: Go to EC2 → Load Balancers
+- ALB should be created automatically
 
 ## 🔗 Domain Setup & Live Application Access (Step 12)
 
@@ -267,11 +331,10 @@ This workflow will:
 
 ### 4️⃣ Access Your Live Application 🎉
 
-Once the Route 53 workflow completes, your application will be publicly available at:
+- Once the Route 53 workflow completes, your application will be publicly available at:
 
-http://<repository-name>.<domain-name>
-📌 Example:
-http://expense-tracker.example.com
+- http://<repository-name>.<domain-name>
+- 📌 Example: http://expense-tracker.example.com
 
 
 ---
