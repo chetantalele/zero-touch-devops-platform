@@ -333,7 +333,8 @@ This workflow will:
 
 - Once the Route 53 workflow completes, your application will be publicly available at:
 
-- http://<repository-name>.<domain-name>
+- **`http://<repository-name>.<domain-name>`**
+
 - 📌 Example: http://expense-tracker.example.com
 
 
