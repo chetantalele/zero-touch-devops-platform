@@ -268,6 +268,21 @@ Add the following secrets:
 
 ## 🟢 STEP 8 — Add Your Application
 
+## 📂 Repository Folder Structure
+
+```text
+.
+├── .github
+├── terraform
+├── k8s
+├── scripts
+├── app
+│   ├── Dockerfile
+│   └── src
+│       └── main-app
+├── README.md
+
+
 ### 📁 `/app` folder
 Put your application code here.
 
@@ -356,5 +371,13 @@ This workflow will:
 ---
 
 ✅ **At this point, your application is fully live and production-ready.**
+
+## ✅ Done!
+
+Just configure the credentials, add your app inside the `app/` folder, and push your code to the `main` branch.
+
+⏳ Wait **10–15 minutes** for the pipeline to complete — your application will be live automatically.
+
+
 
 
