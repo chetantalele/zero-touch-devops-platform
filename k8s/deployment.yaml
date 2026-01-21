@@ -15,5 +15,6 @@ spec:
       containers:
         - name: __APP_NAME__
           image: __IMAGE_URI__
+          imagePullPolicy: Always
           ports:
             - containerPort: 3000

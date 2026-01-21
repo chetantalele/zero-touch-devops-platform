@@ -77,7 +77,6 @@ This platform solves all of that by providing:
 
 # 🧑‍💻 HOW TO USE THIS PLATFORM (STEP-BY-STEP)
 
-> ⚠️ These steps assume **a fresh AWS account** and **no prior DevOps experience**
 
 ---
 
@@ -159,7 +158,6 @@ Attach the following AWS managed policy:
 
 - `AdministratorAccess` *(recommended only for learning/demo)*
 
-> 🔐 **Production environments should always use least-privilege policies.**
 
 ---
 

@@ -127,15 +127,18 @@ jobs:
           --region $AWS_REGION
 
     - name: Build & Push Image
+      env:
+        IMAGE_TAG: ${{ github.sha }}
       run: |
-        docker build -t $APP_NAME ./app
-        docker tag $APP_NAME:latest ${{ secrets.ECR_URL }}/$APP_NAME:latest
-        docker push ${{ secrets.ECR_URL }}/$APP_NAME:latest
+        docker build -t $APP_NAME:$IMAGE_TAG ./app
+        docker tag $APP_NAME:$IMAGE_TAG ${{ secrets.ECR_URL }}/$APP_NAME:$IMAGE_TAG
+        docker push ${{ secrets.ECR_URL }}/$APP_NAME:$IMAGE_TAG
+
 
     - name: Inject values
       env:
         APP_NAME: ${{ github.event.repository.name }}
-        IMAGE_URI: ${{ secrets.ECR_URL }}/${{ github.event.repository.name }}:latest
+        IMAGE_URI: ${{ secrets.ECR_URL }}/${{ github.event.repository.name }}:${{ github.sha }}
         DOMAIN_NAME: ${{ secrets.DOMAIN_NAME }}
       run: |
         chmod +x scripts/inject.sh
