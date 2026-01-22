@@ -73,6 +73,8 @@ This platform solves all of that by providing:
 ---
 
 ## 🚦 End-to-End Flow (How the Platform Works)
+![Zero Touch DevOps Platform Flow Diagram](docs/Flow-diagram.png)
+
 
 
 # 🧑‍💻 HOW TO USE THIS PLATFORM (STEP-BY-STEP)
@@ -156,7 +158,7 @@ This ensures:
 
 Attach the following AWS managed policy:
 
-- `AdministratorAccess` *(recommended only for learning/demo)*
+- `AdministratorAccess` 
 
 
 ---
